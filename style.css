@@ -1,3 +1,4 @@
+
 :root {
   --primary: #1f6f8b;
   --primary-dark: #18576d;
@@ -147,6 +148,7 @@ input:focus { outline: 2px solid var(--primary); border-color: transparent; }
 
 .venta-info { font-size: 0.9rem; color: var(--text); }
 .venta-info b { color: var(--text); }
+.venta-cliente { font-size: 0.95rem; font-weight: 600; color: var(--primary); margin: 2px 0 4px; }
 .saldo { color: var(--danger); font-weight: 700; }
 .venta-actions { margin-top: 10px; }
 
