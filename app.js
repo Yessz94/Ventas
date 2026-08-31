@@ -158,11 +158,13 @@
       card.className = 'venta-card ' + clase;
 
       var fechaTxt = v.fecha || '';
+      var clienteTxt = v.cliente ? esc(v.cliente) : '';
       var html = '';
       html += '<div class="venta-top">';
       html += '<span class="venta-perfume">' + esc(v.perfume) + '</span>';
       html += '<span class="estado ' + clase + '">' + etiqueta + '</span>';
       html += '</div>';
+      if (clienteTxt) { html += '<div class="venta-cliente">👤 ' + clienteTxt + '</div>'; }
       html += '<div class="venta-info">';
       html += 'Precio: <b>' + dinero(v.precio) + '</b> &nbsp; Costo: <b>' + dinero(v.costo) + '</b> &nbsp; Pago: <b>' + esc(v.pago === 'contado' ? 'Contado' : 'Crédito') + '</b>';
       if (fechaTxt) { html += '<div class="abono-fecha">' + esc(fechaTxt) + '</div>'; }
@@ -193,6 +195,7 @@
 
   // ---------- Nueva venta ----------
   function abrirModalVenta() {
+    $id('f-cliente').value = '';
     $id('f-perfume').value = '';
     $id('f-precio').value = '';
     $id('f-costo').value = '';
@@ -201,7 +204,7 @@
     actualizarAbonoVisible();
     $id('modal-title').textContent = 'Nueva venta';
     $id('modal-venta').classList.remove('hidden');
-    $id('f-perfume').focus();
+    $id('f-cliente').focus();
   }
 
   function cerrarModalVenta() {
@@ -215,17 +218,20 @@
   }
 
   function guardarVenta() {
+    var cliente = $id('f-cliente').value.trim();
     var perfume = $id('f-perfume').value.trim();
     var precio = Number($id('f-precio').value) || 0;
     var costo = Number($id('f-costo').value) || 0;
     var pago = document.querySelector('input[name="pago"]:checked').value;
     var abono = pago === 'credito' ? (Number($id('f-abono').value) || 0) : 0;
 
+    if (!cliente) { toast('Escribe el nombre del cliente'); return; }
     if (!perfume) { toast('Escribe el nombre del perfume'); return; }
     if (precio <= 0) { toast('Pon un precio válido'); return; }
     if (costo < 0) { toast('El costo no puede ser negativo'); return; }
 
     var venta = {
+      cliente: cliente,
       perfume: perfume,
       precio: precio,
       costo: costo,
@@ -251,6 +257,7 @@
 
     $id('det-perfume').textContent = v.perfume;
     $id('det-info').innerHTML =
+      'Cliente: <b>' + esc(v.cliente ? v.cliente : '—') + '</b><br>' +
       'Precio: <b>' + dinero(v.precio) + '</b><br>' +
       'Costo: <b>' + dinero(v.costo) + '</b><br>' +
       'Pago: <b>' + (v.pago === 'contado' ? 'Contado' : 'Crédito') + '</b><br>' +
