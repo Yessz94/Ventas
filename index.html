@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Ventas - Decants de Perfumes</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1f6f8b">
+</head>
+<body>
+
+  <!-- Pantalla de conexión a Google Sheets -->
+  <div id="screen-setup" class="screen">
+    <div class="card setup-card">
+      <h1>💧 Registro de Ventas</h1>
+      <p class="subtitle">Decants de Perfumes</p>
+
+      <div class="form-group">
+        <label for="sheet-url">URL de conexión (la copias del instructivo)</label>
+        <input type="text" id="sheet-url" placeholder="https://script.google.com/macros/s/..." autocomplete="off">
+      </div>
+
+      <button id="btn-save-url" class="btn primary full">Conectar e iniciar</button>
+      <button id="btn-edit-url" class="btn ghost full hidden">Cambiar URL de conexión</button>
+
+      <p class="hint" id="setup-hint">No has configurado la conexión. Sigue el instructivo <strong>INSTRUCCIONES.txt</strong>.</p>
+    </div>
+  </div>
+
+  <div id="screen-app" class="screen hidden">
+    <!-- Encabezado -->
+    <header>
+      <h1>💧 Registro de Ventas</h1>
+      <p class="subtitle">Decants de Perfumes</p>
+      <button id="btn-refresh" class="btn small">↻ Actualizar</button>
+    </header>
+
+    <!-- Resumen -->
+    <section class="resumen">
+      <div class="stat">
+        <span class="stat-label">Total vendido</span>
+        <span class="stat-value" id="stat-vendido">$0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Ganancia</span>
+        <span class="stat-value" id="stat-ganancia">$0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Por cobrar</span>
+        <span class="stat-value" id="stat-porcobrar">$0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Ventas</span>
+        <span class="stat-value" id="stat-ventas">0</span>
+      </div>
+    </section>
+
+    <!-- Botón nueva venta -->
+    <div class="actions">
+      <button id="btn-nueva" class="btn primary full">+ Nueva venta</button>
+    </div>
+
+    <!-- Lista de ventas -->
+    <section class="ventas">
+      <h2>Ventas registradas</h2>
+      <div id="lista-ventas"></div>
+      <p class="empty" id="empty-list">Aún no hay ventas registradas.</p>
+    </section>
+
+    <!-- Modal: nueva venta -->
+    <div id="modal-venta" class="modal hidden">
+      <div class="modal-box">
+        <h2 id="modal-title">Nueva venta</h2>
+
+        <div class="form-group">
+          <label for="f-perfume">Perfume (decanter)</label>
+          <input type="text" id="f-perfume" placeholder="ej. La Vie Est Belle 10ml" autocomplete="off">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-precio">Precio de venta ($)</label>
+            <input type="number" id="f-precio" placeholder="0.00" min="0" step="0.01">
+          </div>
+          <div class="form-group">
+            <label for="f-costo">Costo del perfume ($)</label>
+            <input type="number" id="f-costo" placeholder="0.00" min="0" step="0.01">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Forma de pago</label>
+          <div class="radio-row">
+            <label class="radio">
+              <input type="radio" name="pago" value="contado" checked> Al contado
+            </label>
+            <label class="radio">
+              <input type="radio" name="pago" value="credito"> Al crédito
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group" id="abono-group">
+          <label for="f-abono">Abono inicial / pago ($)</label>
+          <input type="number" id="f-abono" placeholder="0.00" min="0" step="0.01">
+        </div>
+
+        <div class="modal-actions">
+          <button id="btn-cancelar" class="btn ghost">Cancelar</button>
+          <button id="btn-guardar" class="btn primary">Guardar venta</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: detalle de venta (abonos) -->
+    <div id="modal-detalle" class="modal hidden">
+      <div class="modal-box">
+        <h2 id="det-perfume"></h2>
+        <div class="detalle-info" id="det-info"></div>
+
+        <h3>Registrar abono</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="d-abono">Abono ($)</label>
+            <input type="number" id="d-abono" placeholder="0.00" min="0" step="0.01">
+          </div>
+          <button id="btn-agregar-abono" class="btn primary">Agregar</button>
+        </div>
+
+        <h3>Historial de abonos</h3>
+        <div id="det-abonos"></div>
+
+        <div class="modal-actions">
+          <button id="btn-cerrar-detalle" class="btn ghost">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
