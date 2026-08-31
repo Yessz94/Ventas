@@ -52,9 +52,13 @@
   function mostrarSetup(conUrl) {
     $id('screen-setup').classList.remove('hidden');
     $id('screen-app').classList.add('hidden');
-    $id('btn-save-url').classList.toggle('hidden', !!conUrl);
+    // "Conectar e iniciar" siempre visible para poder guardar la URL.
+    $id('btn-save-url').classList.remove('hidden');
     $id('btn-edit-url').classList.toggle('hidden', !conUrl);
-    var hint = conUrl ? 'Conexión guardada. Pulsa "Cambiar URL" para modificarla.' : 'No has configurado la conexión.';
+    $id('btn-clear-url').classList.toggle('hidden', !conUrl);
+    var hint = conUrl
+      ? 'Tienes una conexión guardada. Escribe la URL nueva y pulsa "Conectar e iniciar", o usa "Limpiar guardada" para empezar de cero.'
+      : 'Pega la URL de conexión y pulsa "Conectar e iniciar".';
     $id('setup-hint').textContent = hint;
   }
 
@@ -353,6 +357,14 @@
     $id('btn-edit-url').addEventListener('click', function () {
       $id('sheet-url').value = estado.url || '';
       mostrarSetup(true);
+    });
+
+    $id('btn-clear-url').addEventListener('click', function () {
+      estado.url = null;
+      guardarURL();
+      $id('sheet-url').value = '';
+      mostrarSetup(false);
+      toast('Conexión guardada eliminada');
     });
 
     $id('btn-refresh').addEventListener('click', function () {
