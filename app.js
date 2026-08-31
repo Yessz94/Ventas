@@ -99,6 +99,10 @@
   }
 
   // ---------- Cargar ventas ----------
+  function esErrorRed(mensaje) {
+    return /failed to fetch|networkerror|load failed/i.test(mensaje || '');
+  }
+
   function cargarVentas() {
     llamarAPI('leer')
       .then(function (res) {
@@ -107,8 +111,19 @@
         renderLista();
       })
       .catch(function (err) {
-        // No hay conexión configurada correctamente
         if (!estado.url) { mostrarSetup(false); return; }
+        // Si la conexión no llega a Google, la URL guardada no vale
+        // (p.ej. quedó la URL de una implementación archivada).
+        if (esErrorRed(err.message)) {
+          $id('sheet-url').value = estado.url;
+          mostrarSetup(true);
+          $id('setup-hint').textContent =
+            'No se pudo conectar con la URL guardada (Failed to fetch). ' +
+            'Revisa que sea la URL de la implementación ACTIVA y que no ' +
+            'pertenezca a una archivada. Cópiala de "Administrar implementaciones" ' +
+            'y pulsa "Conectar e iniciar".';
+          return;
+        }
         toast('Error de conexión: ' + (err.message || 'revisa la URL'));
       });
   }
